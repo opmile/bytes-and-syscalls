@@ -1,0 +1,14 @@
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Local-only Claude context (personal info, never push)
+CLAUDE.local.md
+
+# Aprendizados pessoais, prova social, rascunhos e convenções internas.
+# Nunca versionar — conteúdo não publicável.
+.private/
+
+# Estudo de SO descontinuado — fora de escopo, mantido só local
+research/unix/os/

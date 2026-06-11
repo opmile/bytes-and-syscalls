@@ -1,0 +1,40 @@
+# Dois services. "server" sobe o container principal.
+# "inspector" reusa O MESMO NET namespace do server — ou seja, mesma interface
+# de rede, mesma tabela de sockets, mesmo /proc/net/tcp.
+#
+# Isso é o que `network_mode: "service:server"` faz: ao invés de criar um
+# namespace de rede próprio para o inspector, ele entra no do server.
+# Resultado: dois processos isolados (cada um tem PID, MNT, UTS próprios)
+# mas compartilhando rede.
+#
+# Por que isso é útil: queremos um shell rodando o server Go, e outro shell
+# limpo só pra inspecionar (`ss`, `cat /proc/net/tcp`, `lsof`). Como estão no
+# mesmo NET namespace, o inspector enxerga os sockets do server.
+
+services:
+  server:
+    build: .
+    container_name: socket-tcp-server
+    # volume: monta o diretório do projeto dentro do container.
+    # Edita Go no macOS, container vê instantaneamente.
+    volumes:
+      - .:/app
+    working_dir: /app
+    # tty + stdin_open mantém o container vivo pra `docker exec`.
+    tty: true
+    stdin_open: true
+
+  inspector:
+    build: .
+    container_name: socket-tcp-inspector
+    # CRÍTICO: compartilha NET namespace com o service "server".
+    # Não declara "ports" nem "networks" — usa os do server.
+    network_mode: "service:server"
+    volumes:
+      - .:/app
+    working_dir: /app
+    tty: true
+    stdin_open: true
+    # Garante que o server suba primeiro (network_mode depende dele).
+    depends_on:
+      - server
