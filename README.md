@@ -158,9 +158,3 @@ confere no `/proc` e no `ss` o que o kernel realmente faz — não o que a doc p
 - `05-states` — `TIME_WAIT` saudável vs. `CLOSE_WAIT` vazando file descriptor.
 - `06-mapping` — reconstruir `inode → PID` e descobrir o dono de cada socket, como o
   `ss -p` faz por baixo.
-
-## Histórico
-
-Consolidação de `go-net/foundations`, `go-net/unix`, e `go-socket` em maio
-de 2026. Predecessores em `~/code/_archive/go/`. Camadas app-level (HTTP,
-frameworks) vivem em `backend-notebook`.
